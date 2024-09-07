@@ -44,9 +44,9 @@ void Game::KeyHandler(TextConsole &con, int* Scene)
 {
     uint32_t key = con.getKey();
 
+    if (!Timers[Turn - 1].isRunning()) Timers[Turn - 1].startTimer();
     if (key != SDLK_UNKNOWN) 
     {
-        if (!Timers[Turn - 1].isRunning()) Timers[Turn - 1].startTimer();
         switch (key) 
         {
             case SDLK_a:
