@@ -9,6 +9,7 @@ void SceneManager::ManageScenes(TextConsole &con)
         {
             //Main menu
             case 0:
+                con.playSong(Scene);
                 _Menu->RunScene(con, &Scene);
             break;
 
@@ -19,11 +20,13 @@ void SceneManager::ManageScenes(TextConsole &con)
 
             //Actual game
             case 2:
+                con.playSong(Scene - 1);
                 C4->RunScene(con, &Scene);
             break;
 
             case 3:
             case 4:
+                con.playSong(Scene - 1);
                 RS->RunScene(con, &Scene);
             break;
         }

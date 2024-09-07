@@ -44,9 +44,9 @@ void Game::KeyHandler(TextConsole &con, int* Scene)
 {
     uint32_t key = con.getKey();
 
-    if (!Timers[Turn - 1].isRunning()) Timers[Turn - 1].startTimer();
     if (key != SDLK_UNKNOWN) 
     {
+        if (!Timers[Turn - 1].isRunning()) Timers[Turn - 1].startTimer();
         switch (key) 
         {
             case SDLK_a:
@@ -380,6 +380,7 @@ void Game::endGame(TextConsole &con, int* scene)
             if (Tile[i][0] == 0) break;
             else if (i == (Col - 1)){
                 *scene = 3;
+                con.playDrawSFX();
                 Timers[0].pauseTimer();
                 Timers[1].pauseTimer();
                 auto BG = con.getBackcolor();
@@ -406,6 +407,7 @@ void Game::winAnimation(TextConsole& con)
 {
     auto BG = con.getBackcolor();
     CColor Color;
+    con.playWinSFX();
     for (int i = 0; i < 30 ; i++)
     {
         con.clearScreen();
@@ -496,6 +498,7 @@ bool Game::PlaceToken(TextConsole& con)
         showTime(con);
         return true;
     } catch (std::exception e){
+        con.playErrorSFX();
         SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION, "Columna llena", "¡Esta columna no tiene espacios disponibles!", nullptr);
     }
     return false;

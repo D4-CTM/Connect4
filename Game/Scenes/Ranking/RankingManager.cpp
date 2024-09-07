@@ -14,7 +14,7 @@ void RankingManager::initFile(std::string Filename)
         char Nick = 'A';
         for (int i = 0; i < 5; i++)
         {
-            wf << Nick << Nick << Nick << "\n" << 50 + (50 * i) << '\n'; 
+            wf << Nick << Nick << Nick << "\n" << 1500 + (500 * i) << '\n'; 
             Nick++;
         }
 
@@ -29,12 +29,18 @@ void RankingManager::initArray(std::string Filename)
     std::ifstream rf(Filename);
     std::string line;
 
-    for (int i = 0; i < 5; i++)
-    {
-        getline(rf, Rank.at(i).Nickname);
-        getline(rf, line);
-        Rank.at(i).Points = std::stoi(line);
-    }
+        for (int i = 0; i < 5; i++)
+        {
+            try {
+                getline(rf, Rank.at(i).Nickname);
+                getline(rf, line);
+                Rank.at(i).Points = std::stoi(line);
+                line = "0";
+            } catch (std::exception e) 
+            {
+                std::cout << "Error";
+            }
+        }
 
     rf.close();
 }

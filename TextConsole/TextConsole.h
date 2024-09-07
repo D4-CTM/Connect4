@@ -8,6 +8,7 @@
 #include <thread>
 #include <sstream>
 #include <SDL.h>
+#include <SDL2/SDL_mixer.h>
 #include "CColor.h"
 
 struct CPoint {
@@ -105,6 +106,7 @@ public:
         active(false),
         currentRow(0),
         currentCol(0),
+        lastSong(1),
         rows(rows),
         cols(cols) {}
 
@@ -158,6 +160,10 @@ public:
     CRGBColor getBackcolor() { return backColor; }
     uint32_t getMillis() { return SDL_GetTicks(); }
     bool isActive() { return active; }
+    void playSong(const int& Scene);
+    void playErrorSFX();
+    void playDrawSFX();
+    void playWinSFX();
 
     template <typename T>
     friend TextConsole& operator << (TextConsole& con, const T &);
@@ -170,6 +176,9 @@ private:
     void postRepaintEvent();
     void drawContent();
     void drawSymbol(int row, int col, const FBCell& fbcell);    
+    //Music functions
+    bool addSong(const char* Filename);
+    bool addSFX(const char* Filename);
 
     void moveCursorToNextLine() {
         currentCol = 0;
@@ -194,6 +203,11 @@ private:
     unsigned currentCol;
     unsigned rows;
     unsigned cols;
+
+    //Music vars
+    std::vector<Mix_Chunk*> SFX;
+    std::vector<Mix_Music*> OST;
+    int lastSong;
 };
 
 template <typename T>

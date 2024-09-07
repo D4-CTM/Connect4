@@ -59,7 +59,7 @@ namespace MenuRender
         setOption1(con);
 
         con.setCursor(con.getRowCount() - 1, 0);
-        con << "Developed by: Josh";
+        con << "Developed by: Joush";
         con.setForecolor(Color);
     }
 

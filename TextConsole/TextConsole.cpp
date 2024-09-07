@@ -62,6 +62,14 @@ TextConsole::~TextConsole() {
         guiThread->join();
         delete guiThread;
     }
+    for (int i = 0; i < OST.size(); i++) {
+        Mix_FreeMusic(OST[i]);
+        OST[i] = nullptr;
+    }
+    for (int i = 0; i < SFX.size(); i++) {
+        Mix_FreeChunk(SFX[i]);
+        OST[i] = nullptr;
+    }
 }
 
 unsigned TextConsole::getWidth() 
@@ -89,7 +97,7 @@ bool TextConsole::activate()
 
 bool TextConsole::init() 
 {
-    if (SDL_Init(SDL_INIT_VIDEO) != 0) {
+    if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) != 0) {
         std::cerr << "Unable to initialize SDL: " << SDL_GetError() << '\n';
         return 1;
     }
@@ -99,8 +107,79 @@ bool TextConsole::init()
         return false;        
     }
     SDL_SetWindowTitle(window, "Connect 4");
+    Mix_Init(MIX_INIT_MP3);
+
+    if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0)
+    {
+        std::cerr << "Could not initialize audio: '" << SDL_GetError() << "\n";
+        return false;
+    }
+
+    if (!addSong("./Sounds/Songs/MenuTheme.mp3")) return false; //Dr. Mario
+    if (!addSong("./Sounds/Songs/GameTheme.mp3")) return false; //Urban Fighter
+    if (!addSong("./Sounds/Songs/LoseTheme.mp3")) return false; //Final fantasy I
+    if (!addSong("./Sounds/Songs/WinTheme.mp3")) return false;  //Contra I
+    
+    if (!addSFX("./Sounds/SFX/Win.wav")) return false;
+    if (!addSFX("./Sounds/SFX/Lose.wav")) return false;
+    if (!addSFX("./Sounds/SFX/Bug.wav")) return false;
+
 
     return true;
+}
+
+bool TextConsole::addSong(const char *Filename)
+{
+    Mix_Music* Song = nullptr;
+    Song = Mix_LoadMUS(Filename);
+    if (!Song) {
+        std::cerr << "Could not load song. Mix_loadMUS() error:\n" << Mix_GetError() << std::endl;
+        return false;
+    }
+    OST.push_back(Song);
+    return true;
+}
+
+bool TextConsole::addSFX(const char *Filename)
+{
+    Mix_Chunk* Effect = nullptr;
+    Effect = Mix_LoadWAV(Filename);
+    if (!Effect) {
+        std::cerr << "Could not load song. Mix_loadWAV() error:\n" << Mix_GetError() << std::endl;
+        return false;
+    }
+    SFX.push_back(Effect);
+    return true;
+}
+
+void TextConsole::playSong(const int& Scene)
+{
+    if (lastSong != Scene)
+    {
+        Mix_Volume(1, (Scene != 3) ? MIX_MAX_VOLUME : MIX_MAX_VOLUME/2);
+        Mix_PlayMusic(OST[Scene], -1);
+    }
+    lastSong = Scene;
+}
+
+void TextConsole::playErrorSFX()
+{
+    Mix_Volume(1, MIX_MAX_VOLUME);
+    Mix_PlayChannel(-1, SFX[2], 0);
+}
+
+void TextConsole::playDrawSFX()
+{
+    Mix_HaltMusic();
+    Mix_Volume(1, MIX_MAX_VOLUME/2);
+    Mix_PlayChannel(-1, SFX[1], 0);
+}
+
+void TextConsole::playWinSFX()
+{
+    Mix_HaltMusic();
+    Mix_Volume(1, MIX_MAX_VOLUME/2);
+    Mix_PlayChannel(-1, SFX[0], 0);
 }
 
 void TextConsole::scrollScreen()

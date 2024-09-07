@@ -22,7 +22,7 @@ private:
         User(std::string _Nickname) : Nickname(_Nickname), Points(0) 
         {}
 
-        User() : Nickname("???"), Points(100)
+        User() : Nickname("???"), Points(140)
         {}
 
         ~User()
