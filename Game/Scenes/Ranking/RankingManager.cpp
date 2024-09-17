@@ -96,6 +96,7 @@ bool RankingManager::add(std::string _Nickname, int _Points)
     {
         if (Rank.at(i).Nickname == _Nickname)
         {
+            if (Rank.at(i).Points >= _Points) return false;
             Rank.at(i).Points = _Points;
             sort();
             return true;
