@@ -100,7 +100,7 @@ bool RankingManager::add(std::string _Nickname, int _Points)
     //First loop, this checks out if the nickname doesn't repeat, if it does then we simply insert the new _Points
     for (int i = 0; i < 5; i++)
     {
-        if (Rank.at(i).Nickname == _Nickname)
+        if (Rank.at(i).Nickname == _Nickname && Rank.at(i).Points <= _Points)
         {
             Rank.at(i).Points = _Points;
             sort();
